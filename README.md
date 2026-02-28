@@ -1,0 +1,1 @@
+# wigwam\n\nAccess tmux sessions from the browser.\n\nSee [Releases](https://github.com/Vennify/wigwam-releases/releases) for downloads.\n\n## Install\n\n```bash\nbrew install Vennify/wigwam/wigwam\n```
