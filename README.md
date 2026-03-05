@@ -44,9 +44,6 @@ By default, wigwam connects through a relay server. On first run it opens your b
 ```bash
 # Start wigwam (opens browser to sign in on first run)
 wigwam
-
-# Attach to a specific tmux session
-wigwam -t mysession
 ```
 
 ### Local
@@ -66,7 +63,6 @@ The `-tunnel` flag generates a random public Cloudflare URL — useful for quick
 ## Options
 
 ```
-  -t string          tmux target session (default: first session)
   -port int          server port (default 8080)
   -local             local-only mode (no relay)
   -tunnel            expose via Cloudflare quick tunnel (local mode only)
