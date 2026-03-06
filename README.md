@@ -1,6 +1,6 @@
 # wigwam
 
-Access your tmux sessions from the browser.
+Access your tmux sessions from the browser — or your phone.
 
 Wigwam runs a lightweight daemon alongside tmux and serves a web UI over WebSocket. View and interact with your terminal from any device — your phone, tablet, or another machine.
 
@@ -60,17 +60,55 @@ wigwam -local -tunnel
 
 The `-tunnel` flag generates a random public Cloudflare URL — useful for quick sharing without an account. Requires [cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/).
 
+## CLI Commands
+
+```bash
+wigwam              # start the daemon
+wigwam status       # show daemon status, relay connection, session count
+wigwam login        # authenticate with the relay (skips if already connected)
+wigwam logout       # disconnect from relay and clear saved tokens
+wigwam key          # show encryption key, file path, and QR code image path
+wigwam service install   # install as a system service (systemd/launchd)
+wigwam service uninstall # remove the system service
+wigwam hooks install     # install Claude Code notification hooks
+wigwam version      # print version
+```
+
+## Encryption
+
+All traffic through the relay is end-to-end encrypted by default. The daemon generates an AES-256 session key on first run and a QR code you can scan from the mobile app.
+
+```bash
+# Show your encryption key and QR image path
+wigwam key
+
+# Modes: off, flex, secure, any (default: any)
+wigwam -crypto secure       # require encryption — reject unencrypted clients
+wigwam -crypto off          # disable encryption entirely
+
+# Rotate the encryption key
+wigwam -crypto-rotate
+```
+
 ## Options
 
 ```
-  -port int          server port (default 8080)
-  -local             local-only mode (no relay)
-  -tunnel            expose via Cloudflare quick tunnel (local mode only)
-  -password string   set a custom auth password
-  -tls-cert string   path to TLS certificate file
-  -tls-key string    path to TLS private key file
-  -version           print version and exit
+  -port int            server port (default 8080)
+  -local               local-only mode (no relay)
+  -tunnel              expose via Cloudflare quick tunnel (local mode only)
+  -password string     set a custom auth password
+  -crypto string       encryption mode: off, flex, secure, any (default "any")
+  -crypto-rotate       generate a new encryption key
+  -auto-update         automatically download and install daemon updates
+  -tls-cert string     path to TLS certificate file
+  -tls-key string      path to TLS private key file
+  -relay-url string    relay server URL
+  -relay-token string  auth token for relay (or set WIGWAM_RELAY_TOKEN)
 ```
+
+## Mobile App
+
+Wigwam has companion apps for iOS and Android. Scan the QR code from `wigwam key` to pair your device.
 
 ## License
 
