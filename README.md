@@ -63,16 +63,34 @@ The `-tunnel` flag generates a random public Cloudflare URL — useful for quick
 ## CLI Commands
 
 ```bash
-wigwam              # start the daemon
-wigwam status       # show daemon status, relay connection, session count
-wigwam login        # authenticate with the relay (skips if already connected)
-wigwam logout       # disconnect from relay and clear saved tokens
-wigwam key          # show encryption key, file path, and QR code image path
-wigwam service install   # install as a system service (systemd/launchd)
-wigwam service uninstall # remove the system service
-wigwam hooks install     # install Claude Code notification hooks
-wigwam version      # print version
+wigwam                       # start the daemon
+wigwam status                # show daemon status, relay connection, session count
+wigwam login                 # authenticate with the relay (skips if already connected)
+wigwam logout                # disconnect from relay and clear saved tokens
+wigwam key                   # show encryption key, file path, and QR code image path
+wigwam restart               # stop the running daemon and start a fresh one
+wigwam config                # show all settings
+wigwam config <key>          # show one setting
+wigwam config <key> <value>  # set a setting (applied live if daemon is running)
+wigwam service install       # install as a system service (systemd/launchd)
+wigwam service uninstall     # remove the system service
+wigwam hooks install         # install Claude Code notification hooks
+wigwam version               # print version
 ```
+
+## Settings
+
+Settings are stored in `~/.config/wigwam/config.json` and persist across restarts. CLI flags override config values at startup.
+
+```bash
+wigwam config                        # show all settings
+wigwam config crypto secure          # require encryption
+wigwam config auto_update true       # enable auto-updates
+wigwam config port 9090              # change the server port
+wigwam config local true             # default to local-only mode
+```
+
+Available settings: `port`, `crypto`, `auto_update`, `local`
 
 ## Encryption
 
@@ -83,8 +101,8 @@ All traffic through the relay is end-to-end encrypted by default. The daemon gen
 wigwam key
 
 # Modes: off, flex, secure, any (default: any)
-wigwam -crypto secure       # require encryption — reject unencrypted clients
-wigwam -crypto off          # disable encryption entirely
+wigwam config crypto secure    # require encryption — reject unencrypted clients
+wigwam config crypto off       # disable encryption
 
 # Rotate the encryption key
 wigwam -crypto-rotate
@@ -92,14 +110,16 @@ wigwam -crypto-rotate
 
 ## Options
 
+CLI flags override config file values for a single run:
+
 ```
-  -port int            server port (default 8080)
-  -local               local-only mode (no relay)
+  -port int            server port (default from config, fallback 8080)
+  -local               local-only mode (default from config)
   -tunnel              expose via Cloudflare quick tunnel (local mode only)
   -password string     set a custom auth password
-  -crypto string       encryption mode: off, flex, secure, any (default "any")
+  -crypto string       encryption mode: off, flex, secure, any (default from config)
   -crypto-rotate       generate a new encryption key
-  -auto-update         automatically download and install daemon updates
+  -auto-update         automatically download and install daemon updates (default from config)
   -tls-cert string     path to TLS certificate file
   -tls-key string      path to TLS private key file
   -relay-url string    relay server URL
